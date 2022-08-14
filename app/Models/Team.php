@@ -7,10 +7,11 @@ use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Team as JetstreamTeam;
+use SoftDeletes;
 
 class Team extends JetstreamTeam
 {
-    use HasFactory;
+    use HasFactory, softDeletes;
 
     /**
      * The attributes that should be cast.
@@ -28,6 +29,8 @@ class Team extends JetstreamTeam
      */
     protected $fillable = [
         'name',
+        'icon',
+        'company_id',
         'personal_team',
     ];
 
@@ -41,4 +44,14 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }
