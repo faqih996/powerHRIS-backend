@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->index();
             $table->string('name');
             $table->string('icon');
-            $table->bigInteger('company_id');
+            $table->bigInteger('company_id')->unsigned();
             $table->boolean('personal_team');
             $table->softDeletes();
             $table->timestamps();
