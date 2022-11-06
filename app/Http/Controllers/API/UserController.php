@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
+use App\Helpers\ResponseFormatter;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Helpers\ResponseFormatter;
-use Illumincate\Support\Facades\Auth;
-use Illumincate\Support\Facades\Hash;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
 
 class UserController extends Controller
@@ -92,5 +92,20 @@ class UserController extends Controller
             // return error response
             return ResponseFormatter::error($error->getMessage());
         }
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request
+            ->user()
+            ->currentAccessToken()
+            ->delete();
+    }
+
+    public function fetch(Request $request)
+    {
+        $user = $request->user();
+
+        return ResponseFormatter::success($user, 'FetchSuccess');
     }
 }
