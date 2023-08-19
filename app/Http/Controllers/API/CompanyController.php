@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCompanyRequest;
+use App\Http\Requests\UpdateCompanyRequest;
 use Illuminate\Http\Request;
 
 use App\Models\User;
@@ -19,7 +20,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function all(Request $request)
+    public function fetch(Request $request)
     {
         $id = $request->input('id');
         $name = $request->input('name');
@@ -80,27 +81,6 @@ class CompanyController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -109,9 +89,32 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCompanyRequest $request, $id)
     {
-        //
+        try {
+            // Get company
+            $company = Company::find($id);
+
+            // Check if company exists
+            if (!$company) {
+                throw new Exception('Company not found');
+            }
+
+            // Upload logo
+            if ($request->hasFile('logo')) {
+                $path = $request->file('logo')->store('public/logos');
+            }
+
+            // Update company
+            $company->update([
+                'name' => $request->name,
+                'logo' => isset($path) ? $path : $company->logo,
+            ]);
+
+            return ResponseFormatter::success($company, 'Company updated');
+        } catch (Exception $error) {
+            return ResponseFormatter::error($error->getMessage(), 500);
+        }
     }
 
     /**
@@ -120,8 +123,4 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
 }
