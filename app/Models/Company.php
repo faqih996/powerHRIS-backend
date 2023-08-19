@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use softDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
 {
@@ -13,7 +13,7 @@ class Company extends Model
 
     protected $fillable = [
         'name',
-        'logo', 
+        'logo',
     ];
 
 

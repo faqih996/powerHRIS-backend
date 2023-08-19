@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -20,6 +21,9 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('logout', [UserController::class, 'logout'])->middleware(
     'auth:sanctum'
 );
+
 Route::get('user', [UserController::class, 'fetch'])->middleware(
     'auth:sanctum'
 );
+
+Route::get('company', [CompanyController::class, 'all']);
