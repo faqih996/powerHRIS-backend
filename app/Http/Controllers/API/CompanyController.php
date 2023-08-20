@@ -26,17 +26,23 @@ class CompanyController extends Controller
         $name = $request->input('name');
         $limit = $request->input('limit', 10);
 
-        if($id){
-            $company = Company::with(['users'])->find($id);
+        $companyQuery = Company::with(['users'])->whereHas('users', function ($query) {
+            $query->where('user_id', Auth::id());
+        });
 
-            if ($company){
+        // Get single data
+        if ($id) {
+            $company = $companyQuery->find($id);
+
+            if ($company) {
                 return ResponseFormatter::success($company, 'Company found');
             }
 
             return ResponseFormatter::error('Company not found', 404);
         }
 
-        $companies = Company::with(['users']);
+        // Get multiple data
+        $companies = $companyQuery;
 
         if ($name) {
             $companies->where('name', 'like', '%' . $name . '%');
@@ -112,8 +118,11 @@ class CompanyController extends Controller
             ]);
 
             return ResponseFormatter::success($company, 'Company updated');
+
         } catch (Exception $error) {
+
             return ResponseFormatter::error($error->getMessage(), 500);
+
         }
     }
 
